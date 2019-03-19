@@ -3,6 +3,8 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -19,6 +21,9 @@ public class Logic extends JPanel {
 	// music for 200 ms
 	// screen (hide after 500 ms or after the button is clicked)
 
+	public File file;
+	public FileWriter writer;
+	
 	private JPanel promptPanel, instructionsPanel, getReadyPanel;
 	private FixationPanel fixationPanel;
 	private Timer getReadyTimer, musicTimer, fixationTimer, trialTimer;
@@ -49,7 +54,7 @@ public class Logic extends JPanel {
 		initializeMusic();
 		initializeSequence();
 		current = bLeft;
-		add(promptPanel);	
+		add(promptPanel);
 	}
 
 	private void createPromptPanel() {
@@ -60,6 +65,9 @@ public class Logic extends JPanel {
 		promptButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//Make file for the participant
+				int ptNumber = Integer.parseInt(promptField.getText());
+				createNewFile(ptNumber); 
 				
 				for (int i = 0; i < blockSequence.length; i++) {
 					int blockID = blockSequence[i];
@@ -75,6 +83,27 @@ public class Logic extends JPanel {
 		promptPanel.add(promptButton);
 	}
 
+	private void createNewFile(int ptNumber) {
+		//Path path = FileSystems.getDefault().getPath(".").toAbsolutePath();
+		String fileName = "./" + ptNumber + ".txt";
+		System.out.println(fileName);
+		file = new File(fileName); 
+		try {
+			if (file.createNewFile())
+			{
+				//write down the date 
+				 
+				//Initialize file writer
+				writer = new FileWriter(file);
+//				writer.write("Test data");
+//				writer.close();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void createInstructionsPanel() {
 		instructionsPanel = new JPanel(new FlowLayout());
 		instructionsLabel = new JLabel();
@@ -155,7 +184,19 @@ public class Logic extends JPanel {
 			}
 			else {
 				stop = System.nanoTime();
+				long reacTime = stop - start;
 				System.out.println("Trial time: " + (stop - start));
+				
+				try {
+					
+					writer.write("RT: " + reacTime + "\n");
+					writer.flush();
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 				start = stop;
 				startTrial();
 			}
