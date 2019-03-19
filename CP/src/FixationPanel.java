@@ -58,9 +58,43 @@ public class FixationPanel extends JPanel implements KeyListener {
 				System.out.print("right!");
 			}
 		}
-		//record answer 
+		//record answer
+		
+		//Following key detection is working: Just need to write to file, see next method
+		//Right arrow pressed
+		if (e.getKeyCode()==39)
+	    {
+	         System.out.println("Right\n");
+	    }
+
+		//Left arrow pressed
+	    else if (e.getKeyCode()==37)
+	    {
+	         System.out.println("Left\n");
+	    }
+		
+		//Invalid key pressed, record null
+	    else {
+	         System.out.println("Invalid key\n");
+	    }
 
 	}
+	
+	/*
+	 * Record left, right, or null --> Just shell. Need to get writer/file into this class 
+	 * Not sure if we need this if we just want to record accurate or not
+	 */
+//	private void recordKey(String result) {
+//		try {
+//			
+////			writer.write("RT: " + result + "\n");
+////			writer.flush();
+//			
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
