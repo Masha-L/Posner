@@ -32,7 +32,7 @@ public class Logic extends JPanel {
 	private JPanel self = this;
 	private String[] INSTRUCTIONS = {"", "", "", "", "", ""};
 	private JLabel instructionsLabel;
-	private boolean distractors;
+	private boolean distractors = true;
 	// 0 - control, 1 - exo, 2 - endo
 	private int soundType;
 	private ImageIcon image;
@@ -149,6 +149,12 @@ public class Logic extends JPanel {
 	
 	private void createMusicTimer() {
 		musicTimer = new Timer(200, event -> {
+			fixationPanel.addStar(1);
+			//Level 2 if distractors == True
+		//	if(distractors) {
+//				//Add distractors
+			fixationPanel.addDistractors();
+		//	}
 			// ADD DISTRACTORS IF NEEDED (CREATE A METHOD INSIDE FIXATIONPANEL CLASS)
 			revalidate();
 			repaint();	
@@ -166,7 +172,7 @@ public class Logic extends JPanel {
 		fixationTimer = new Timer(500, event -> {
 			// if the key is pressed while it is listening, record into
 			// the boolean variable keyPressed - not here
-			
+			fixationPanel.deleteDistractors();
 			// in FIXATIONPANEL, in keyPressed() 
 			// if specific keys were pressed WHILE LISTENING - record 
 			System.out.println("timeout!");
