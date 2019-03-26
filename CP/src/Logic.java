@@ -26,7 +26,7 @@ public class Logic extends JPanel {
 	
 	private JPanel promptPanel, instructionsPanel, getReadyPanel;
 	private FixationPanel fixationPanel;
-	private Timer getReadyTimer, musicTimer, fixationTimer, trialTimer;
+	private Timer getReadyTimer, musicTimer, fixationTimer, trialTimer, blockTimer;
 	private Music left, right, bLeft, bRight, current;
 	private int[] blockSequence = new int[6];
 	private JPanel self = this;
@@ -50,6 +50,7 @@ public class Logic extends JPanel {
 		createGetReadyPanel();
 		createGetReadyTimer();
 		createTrialTimer();
+		createBlockTimer();
 		createMusicTimer();
 		initializeMusic();
 		initializeSequence();
@@ -112,6 +113,7 @@ public class Logic extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {		
 				startBlock();
+				blockTimer.start();
 			}		
 		});
 		instructionsPanel.add(instructionsLabel);
@@ -179,7 +181,8 @@ public class Logic extends JPanel {
 	private void createTrialTimer() {	
 		// Triggers every 1000 + 200 + 500 ms
 		trialTimer = new Timer(1800, e ->  {
-			if (++trialCounter == 4) {
+			//Will start new block every 4 trials
+			if (++trialCounter % 4 == 0) {
 				trialTimer.stop();
 			}
 			else {
@@ -201,6 +204,15 @@ public class Logic extends JPanel {
 				startTrial();
 			}
 		});
+	}
+	
+	private void createBlockTimer() {	
+		// Triggers every 1000 + 200 + 500 ms
+		//50,000ms - length of block (50 sec)
+		blockTimer = new Timer(7000, e ->  {
+			displayPanel(instructionsPanel);
+		});
+		blockTimer.setRepeats(false);
 	}
 	
 	private void displayPanel(JPanel newPanel) {
@@ -230,21 +242,19 @@ public class Logic extends JPanel {
 
 	private void initializeSequence() {
 		/*
-		 * 0 - no distractors, silence
-		 * 1 - distractors, silence
-		 * 2 - no distractors, exo
-		 * 3 - distractors, exo
-		 * 4 - no distractors, endo
-		 * 5 - distractors, endo
+		 * 0 - silence
+		 * 1 - endogenous
+		 * 2 - exogenous
+		 
 		 */	
 		Random rand = new Random();
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 3; i++) {
 			blockSequence[i] = i;
 		}
-		// mix up
+		// mix up - swaps 15 times
 		for (int i = 0; i < 15; i++) {
-			int a = rand.nextInt(6);
-			int b = rand.nextInt(6);
+			int a = rand.nextInt(3);
+			int b = rand.nextInt(3);
 			int temp = blockSequence[a];
 			blockSequence[a] = blockSequence[b];
 			blockSequence[b] = temp;
