@@ -90,9 +90,9 @@ public class Logic extends JPanel {
 			if (file.createNewFile())
 			{
 				//write down the date 
-
 				//Initialize file writer
 				writer = new FileWriter(file);
+				fixationPanel.initializeWriter(writer);
 				writer.write("trialCounter currentBlock condition congruent accuracy reaction time\n");
 			}
 		} catch (IOException e) {
@@ -131,7 +131,7 @@ public class Logic extends JPanel {
 	}
 
 	private void createFixationPanel() {
-		fixationPanel = new FixationPanel(fixationTimer, writer);
+		fixationPanel = new FixationPanel(fixationTimer);
 	}
 
 	private void setInstructions(String currentInstruction) {

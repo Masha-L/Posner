@@ -33,8 +33,7 @@ public class FixationPanel extends JPanel implements KeyListener {
 	private int mySide;
 	private FileWriter writer;
 
-	public FixationPanel(Timer timer, FileWriter writer) {
-		this.writer = writer;
+	public FixationPanel(Timer timer) {
 		isListening = false;
 		this.fixationTimer = timer;
 		//Add fixation cross and boxes
@@ -45,6 +44,9 @@ public class FixationPanel extends JPanel implements KeyListener {
 		addKeyListener(this);
 	}
 
+	void initializeWriter(FileWriter writer) {
+		this.writer = writer;
+	}
 	/*
 	 * L Box X: 252
 	 * R Box X: 877
@@ -241,11 +243,11 @@ public class FixationPanel extends JPanel implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		if(isListening) {
 			//record answer
-
 			//Following key detection is working: Just need to write to file, see next method
 			//Right arrow pressed
 			if (e.getKeyCode()==39)
 			{
+				isListening = false;
 				if(mySide == 1)
 					recordReactionTime(1);
 				else
@@ -258,8 +260,9 @@ public class FixationPanel extends JPanel implements KeyListener {
 			}
 
 			//Left arrow pressed
-			else if (e.getKeyCode()==37)
+			if (e.getKeyCode()==37)
 			{
+				isListening = false;
 				if(mySide == 0)
 					recordReactionTime(1);
 				else
