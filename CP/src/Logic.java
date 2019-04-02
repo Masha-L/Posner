@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,31 +16,34 @@ import javax.swing.JTextField;
 import javax.swing.Timer;
 
 public class Logic extends JPanel {
-	// prompt for number + button	
-	// instructions + start
-	// get ready (1 sec)
-	// music for 200 ms
-	// screen (hide after 500 ms or after the button is clicked)
 
 	public File file;
 	public FileWriter writer;
-	
+
 	private JPanel promptPanel, instructionsPanel, getReadyPanel;
+
 	private FixationPanel fixationPanel;
+
 	private Timer getReadyTimer, musicTimer, fixationTimer, trialTimer, blockTimer;
+
 	private Music left, right, bLeft, bRight, current;
-	private int[] blockSequence = new int[6];
-	private JPanel self = this;
+
+	private int[] blockSequence = new int[3];
+
 	private String[] INSTRUCTIONS = {"", "", "", "", "", ""};
 	private JLabel instructionsLabel;
+	private int trialCounter = 0;
+	private int currentBlock = 0;
+	private int blockID = 0;
+	private long start, stop;
+
 	private boolean distractors = true;
 	// 0 - control, 1 - exo, 2 - endo
 	private int soundType;
-	private ImageIcon image;
-	private int trialCounter = 0;
-	
-	private long start, stop;
-	
+	//0 - left, 1 - right
+	private int direction;
+	//true - if congruent, false if not 
+	private boolean congruent;
 
 	public Logic() {
 		setLayout(new BorderLayout());	
@@ -69,14 +73,7 @@ public class Logic extends JPanel {
 				//Make file for the participant
 				int ptNumber = Integer.parseInt(promptField.getText());
 				createNewFile(ptNumber); 
-				
-				for (int i = 0; i < blockSequence.length; i++) {
-					int blockID = blockSequence[i];
-					setInstructions(INSTRUCTIONS[blockID]);
-					distractors = (blockID % 2 != 0); 
-					soundType = blockID / 2;
-					displayPanel(instructionsPanel);	
-				}
+				displayPanel(instructionsPanel);
 			}		
 		});
 		promptPanel.add(promptLabel);
@@ -93,27 +90,40 @@ public class Logic extends JPanel {
 			if (file.createNewFile())
 			{
 				//write down the date 
-				 
+
 				//Initialize file writer
 				writer = new FileWriter(file);
-//				writer.write("Test data");
-//				writer.close();
+				writer.write("trialCounter currentBlock condition congruent accuracy reaction time\n");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void createInstructionsPanel() {
 		instructionsPanel = new JPanel(new FlowLayout());
 		instructionsLabel = new JLabel();
+		instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
+		instructionsLabel.setVerticalAlignment(JLabel.CENTER);
 		JButton startButton = new JButton("Start");
 		startButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {		
-				startBlock();
-				blockTimer.start();
+			public void actionPerformed(ActionEvent e) {
+				if(currentBlock < 6) {
+					if(currentBlock==2) {
+						blockID++;
+					}
+
+					if(currentBlock == 4) {
+						blockID++;
+					}
+
+					setConditions();
+					startBlock();
+					blockTimer.start();
+				}
+
 			}		
 		});
 		instructionsPanel.add(instructionsLabel);
@@ -121,17 +131,20 @@ public class Logic extends JPanel {
 	}
 
 	private void createFixationPanel() {
-		fixationPanel = new FixationPanel(fixationTimer);
+		fixationPanel = new FixationPanel(fixationTimer, writer);
 	}
-	
+
 	private void setInstructions(String currentInstruction) {
 		instructionsLabel.setText(currentInstruction);
 	}
-	
+
 	private void createGetReadyPanel() {
 		getReadyPanel = new JPanel(new BorderLayout());
-		JLabel getReadyLabel = new JLabel("<html>Get ready!</html>");
-		getReadyPanel.add(getReadyLabel);
+		JLabel getReadyLabel = new JLabel("Get ready!");
+		getReadyLabel.setHorizontalAlignment(JLabel.CENTER);
+		getReadyLabel.setVerticalAlignment(JLabel.CENTER);
+		getReadyLabel.setFont(new Font(getReadyLabel.getFont().getFontName(), Font.BOLD, 35));
+		getReadyPanel.add(getReadyLabel, BorderLayout.CENTER);
 	}
 
 	private void createGetReadyTimer() {
@@ -140,25 +153,27 @@ public class Logic extends JPanel {
 			add(fixationPanel);			
 			revalidate();
 			repaint();
-			
-			current.play(true);
+
+			if(blockSequence[blockID]!=0) {
+				current.play(true);
+			}
+
 			musicTimer.start();
 		});
 		getReadyTimer.setRepeats(false);
 	}
-	
+
 	private void createMusicTimer() {
 		musicTimer = new Timer(200, event -> {
-			fixationPanel.addStar(1);
-			//Level 2 if distractors == True
-		//	if(distractors) {
-//				//Add distractors
-			fixationPanel.addDistractors();
-		//	}
-			// ADD DISTRACTORS IF NEEDED (CREATE A METHOD INSIDE FIXATIONPANEL CLASS)
+			fixationPanel.addStar(direction);
+			//Add distractors
+			if(distractors) {
+				fixationPanel.addDistractors();
+			}
+
 			revalidate();
 			repaint();	
-			
+
 			// fixationpanel starts listening
 			fixationPanel.startListening();
 			fixationTimer.start();
@@ -167,7 +182,7 @@ public class Logic extends JPanel {
 		});
 		musicTimer.setRepeats(false);
 	}
-	
+
 	private void createFixationTimer() {
 		fixationTimer = new Timer(500, event -> {
 			// if the key is pressed while it is listening, record into
@@ -176,10 +191,12 @@ public class Logic extends JPanel {
 			// in FIXATIONPANEL, in keyPressed() 
 			// if specific keys were pressed WHILE LISTENING - record 
 			System.out.println("timeout!");
-//STOP LISTENING! 
+			//STOP LISTENING! 
 			// at trigger, STOP listening;  
 			// if !keyPressed, record the results
 			// otherwise, do nothing
+			recordTimeOut();
+
 		});
 		fixationTimer.setRepeats(false);
 	}
@@ -192,26 +209,22 @@ public class Logic extends JPanel {
 				trialTimer.stop();
 			}
 			else {
-				stop = System.nanoTime();
-				long reacTime = stop - start;
-				System.out.println("Trial time: " + (stop - start));
-				
-				try {
-					
-					writer.write("RT: " + reacTime + "\n");
-					writer.flush();
-					
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				start = stop;
 				startTrial();
 			}
 		});
 	}
-	
+
+	private void recordTimeOut() {
+		try {
+
+			writer.write(0 + " " + 500 + "\n");
+			writer.flush();
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
 	private void createBlockTimer() {	
 		// Triggers every 1000 + 200 + 500 ms
 		//50,000ms - length of block (50 sec)
@@ -220,7 +233,7 @@ public class Logic extends JPanel {
 		});
 		blockTimer.setRepeats(false);
 	}
-	
+
 	private void displayPanel(JPanel newPanel) {
 		removeAll();
 		add(newPanel);			
@@ -251,7 +264,7 @@ public class Logic extends JPanel {
 		 * 0 - silence
 		 * 1 - endogenous
 		 * 2 - exogenous
-		 
+
 		 */	
 		Random rand = new Random();
 		for (int i = 0; i < 3; i++) {
@@ -267,16 +280,71 @@ public class Logic extends JPanel {
 		}
 	}
 
+	protected void setConditions() {
+		//determine distractors 
+		determineDistractors();
+		//set proper instructions 
+		setInstructions("hey ho");
+	}
+
+	private void determineDirection() {
+		Random r = new Random();
+		direction = r.nextInt(2);
+	}
+
+	private void determineDistractors() {
+		if(currentBlock%2==0)
+			distractors = false;
+		else 
+			distractors = true;
+		currentBlock++;
+	}
+
+	private void eightyTwentyMusic() {
+		Random r = new Random();
+		int val = r.nextInt(100);
+
+		if(val>=20) {
+			if(direction==0) //left
+				current = (blockSequence[blockID] == 1) ? bLeft: left;
+			else
+				current = (blockSequence[blockID] == 1) ? bRight: right;
+			congruent = true;
+		}
+		else {
+			if(direction==0)
+				current = (blockSequence[blockID] == 1) ? bRight: right;
+			else
+				current = (blockSequence[blockID] == 1) ? bLeft: left;
+			congruent = false;
+		}	
+	}
+
 	private void startBlock() {
 		start = System.nanoTime();	
 		trialTimer.start();
 		startTrial();
 	}
-	
+
 	private void startTrial() {
-		// DETERMINE CONGRUENCY HERE!
-		System.out.println("new trial");
+		fixationPanel.removeStar();
+		//remove the star
+		//choose stimuli first! 
+		determineDirection(); 
+		//determine congruency 
+		eightyTwentyMusic();
+		recordData();
 		displayPanel(getReadyPanel);	
 		getReadyTimer.start();		
+	}
+
+	private void recordData() {
+		try {
+			writer.write(trialCounter + " " + currentBlock + " " + blockSequence[blockID] 
+					+ " " + congruent + " ");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

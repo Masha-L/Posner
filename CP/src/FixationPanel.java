@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public class FixationPanel extends JPanel implements KeyListener {
 
 	private boolean isListening;
 	private Timer fixationTimer;
-	
+
 	private static int screenHeight = 700;
 	private static int screenWidth = 1250;	
 	private Random rand;
@@ -28,33 +29,22 @@ public class FixationPanel extends JPanel implements KeyListener {
 	spadeLabel, clubLabel, diamondLabel;
 	private Dimension heartSize, spadeSize, clubSize, diamondSize;
 	private boolean isAdded = false;
+	private long reactionTime;
+	private int mySide;
+	private FileWriter writer;
 
-	
-	public FixationPanel( Timer timer) {
+	public FixationPanel(Timer timer, FileWriter writer) {
+		this.writer = writer;
 		isListening = false;
 		this.fixationTimer = timer;
-//		setLayout(new FlowLayout());
-//		setLayout(null);
-//		File file = new File ("fix.png");
-//		Image image = null;
-//		try {
-//			image = ImageIO.read(file);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		ImageIcon icon = new ImageIcon(image);
-//		JLabel fixation = new JLabel();
-//		fixation.setIcon(icon);
-//		fixation.setBounds(0, 0, screenWidth, screenHeight);
-//		add(fixation);
-	    //Add fixation cross and boxes
+		//Add fixation cross and boxes
 		createPanel();
 		createStarLeft();
 		createStarRight();
 		createDistractors();
 		addKeyListener(this);
 	}
-	
+
 	/*
 	 * L Box X: 252
 	 * R Box X: 877
@@ -63,12 +53,11 @@ public class FixationPanel extends JPanel implements KeyListener {
 		//Initialize invalid value
 		int x = 870;
 		while(x > 252-size.width && x < 877) {
-//			System.out.println("IN X LOOP");
 			x = rand.nextInt(screenWidth-size.width);
 		}
 		return x;
 	}
-	
+
 	/*
 	 * Box Y: 290
 	 * Box Size: 120
@@ -77,23 +66,22 @@ public class FixationPanel extends JPanel implements KeyListener {
 		//Initialize value to be too large
 		int y = 400;
 		while(y > 290 - size.height && y < 290 + 120) {
-//			System.out.println("IN Y LOOP");
 			y = rand.nextInt(screenHeight-size.height);
 		}
 		return y;
 	}
-	
+
 	private void createPanel() {
 		setLayout(null);
 		setBackground(new Color(126,126,126));
 		rand = new Random();
-		
+
 		//Fixation Cross
 		JLabel label = new JLabel("+");
 		label.setBounds((screenWidth - 50)/2, setY(50), 50, 50);
 		label.setFont(new Font("Serif", Font.PLAIN, 50));
 		add(label);
-		
+
 		//Boxes
 		BufferedImage lBox = null;
 		BufferedImage rBox = null;
@@ -109,16 +97,16 @@ public class FixationPanel extends JPanel implements KeyListener {
 		Dimension rBoxSize = lBoxLabel.getPreferredSize();
 		lBoxLabel.setBounds((int)(screenWidth*0.25) - 60, setY(lBoxSize.height), lBoxSize.width, lBoxSize.height);
 		rBoxLabel.setBounds((int)(screenWidth*0.75) - 60, setY(rBoxSize.height), rBoxSize.width, rBoxSize.height);
-		
+
 		add(lBoxLabel);
 		add(rBoxLabel);
 	}
-	
+
 	// Centers Y position of objects
 	private int setY(int objHeight) {
 		return (int)(screenHeight-objHeight)/2;
 	}
-	
+
 	/*
 	 * Places the target visual stimulus in the left box
 	 */
@@ -133,7 +121,7 @@ public class FixationPanel extends JPanel implements KeyListener {
 		Dimension size = starLabelLeft.getPreferredSize();
 		starLabelLeft.setBounds((int)(screenWidth*0.25) - 60 + size.width/2-9, setY(size.height), size.width, size.height);	
 	}
-	
+
 	/*
 	 * Places the target visual stimulus in the right box
 	 */
@@ -148,7 +136,7 @@ public class FixationPanel extends JPanel implements KeyListener {
 		Dimension size = starLabelRight.getPreferredSize();
 		starLabelRight.setBounds((int)(screenWidth*0.75) - 60 + size.width/2-9, setY(size.height), size.width, size.height);
 	}
-	
+
 	private void createDistractors() {
 		BufferedImage heart = null;
 		BufferedImage spade = null;
@@ -162,38 +150,46 @@ public class FixationPanel extends JPanel implements KeyListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		//Heart
 		heartLabel = new JLabel(new ImageIcon(heart));
 		heartSize = heartLabel.getPreferredSize();
-		
+
 		//Spade
 		spadeLabel = new JLabel(new ImageIcon(spade));
 		//Kept getting cut off - so set minimum size (increased by 15 from size of image)
 		spadeSize = new Dimension();
 		spadeSize.setSize(85, 100);
-		
+
 		//Club
 		clubLabel = new JLabel(new ImageIcon(club));
 		clubSize = clubLabel.getPreferredSize();
-		
+
 		//Diamond
 		diamondLabel = new JLabel(new ImageIcon(diamond));
 		//Kept getting cut off - so set minimum size (increased by 15 from size of image)
 		diamondSize = new Dimension();
 		diamondSize.setSize(85, 99);
 	}
-	
+
 	//0 = left, 1 = right
 	public void addStar(int side) {
+		mySide = side;
 		if(side == 0) {
+			starLabelLeft.setVisible(true);
 			add(starLabelLeft);
 		}
 		else {
+			starLabelRight.setVisible(true);
 			add(starLabelRight);
 		}
 	}
-	
+
+	public void removeStar() {
+		starLabelLeft.setVisible(false);
+		starLabelRight.setVisible(false);
+	}
+
 	public void addDistractors() {
 		if(!isAdded) {
 			add(heartLabel);
@@ -205,7 +201,7 @@ public class FixationPanel extends JPanel implements KeyListener {
 		randLabelPos();
 		makeDistVisible();
 	}
-	
+
 	private void makeDistVisible() {
 		heartLabel.setVisible(true);
 		spadeLabel.setVisible(true);
@@ -218,7 +214,7 @@ public class FixationPanel extends JPanel implements KeyListener {
 		clubLabel.setBounds(getXCoor(clubSize), getYCoor(clubSize), clubSize.height, clubSize.width);
 		diamondLabel.setBounds(getXCoor(diamondSize), getYCoor(diamondSize), diamondSize.height, diamondSize.width);
 	}
-	
+
 	public void deleteDistractors() {
 		heartLabel.setVisible(false);
 		spadeLabel.setVisible(false);
@@ -229,71 +225,84 @@ public class FixationPanel extends JPanel implements KeyListener {
 	public void startListening() {
 		isListening = true;
 		setFocusable(true);
+		reactionTime = System.currentTimeMillis();
 		requestFocusInWindow();
+
 	}
 
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(isListening) {
-			
-			if(e.getID() == 401)
+			//record answer
+
+			//Following key detection is working: Just need to write to file, see next method
+			//Right arrow pressed
+			if (e.getKeyCode()==39)
 			{
+				if(mySide == 1)
+					recordReactionTime(1);
+				else
+					recordReactionTime(0);
+
 				fixationTimer.stop();
 				isListening = false;
 				deleteDistractors();
-				System.out.print("right!");
+				System.out.println("Right\n");
+			}
+
+			//Left arrow pressed
+			else if (e.getKeyCode()==37)
+			{
+				if(mySide == 0)
+					recordReactionTime(1);
+				else
+					recordReactionTime(0);
+
+				fixationTimer.stop();
+				isListening = false;
+				deleteDistractors();
+				System.out.println("Left\n");
 			}
 		}
-		//record answer
-		
-		//Following key detection is working: Just need to write to file, see next method
-		//Right arrow pressed
-		if (e.getKeyCode()==39)
-	    {
-			fixationTimer.stop();
-			isListening = false;
-			deleteDistractors();
-	        System.out.println("Right\n");
-	    }
+		else {
 
-		//Left arrow pressed
-	    else if (e.getKeyCode()==37)
-	    {
-			fixationTimer.stop();
-			isListening = false;
-			deleteDistractors();
-	        System.out.println("Left\n");
-	    }
-		
-		//Invalid key pressed, record null
-	    else {
-	         System.out.println("Invalid key\n");
-	    }
+			System.out.println("Invalid key\n");
+		}
 
 	}
-	
+
+	private void recordReactionTime(int i) {
+		reactionTime = System.currentTimeMillis() - reactionTime;
+		try {
+			writer.write(i + " " +  reactionTime + "\n");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
 	/*
 	 * Record left, right, or null --> Just shell. Need to get writer/file into this class 
 	 * Not sure if we need this if we just want to record accurate or not
 	 */
-//	private void recordKey(String result) {
-//		try {
-//			
-////			writer.write("RT: " + result + "\n");
-////			writer.flush();
-//			
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//	}
+	//	private void recordKey(String result) {
+	//		try {
+	//			
+	////			writer.write("RT: " + result + "\n");
+	////			writer.flush();
+	//			
+	//		} catch (IOException e1) {
+	//			// TODO Auto-generated catch block
+	//			e1.printStackTrace();
+	//		}
+	//	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
