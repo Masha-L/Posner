@@ -20,7 +20,7 @@ public class Logic extends JPanel {
 	public File file;
 	public FileWriter writer;
 
-	private JPanel promptPanel, instructionsPanel, getReadyPanel;
+	private JPanel promptPanel, instructionsPanel, emptyFixationPanel;
 
 	private FixationPanel fixationPanel;
 
@@ -156,7 +156,6 @@ public class Logic extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(currentBlock < 6) {
-//					updBlockID();
 
 					setConditions();
 					startBlock();
@@ -190,12 +189,7 @@ public class Logic extends JPanel {
 	}
 
 	private void createGetReadyPanel() {
-		getReadyPanel = new JPanel(new BorderLayout());
-		JLabel getReadyLabel = new JLabel("Get ready!");
-		getReadyLabel.setHorizontalAlignment(JLabel.CENTER);
-		getReadyLabel.setVerticalAlignment(JLabel.CENTER);
-		getReadyLabel.setFont(new Font(getReadyLabel.getFont().getFontName(), Font.BOLD, 35));
-		getReadyPanel.add(getReadyLabel, BorderLayout.CENTER);
+		emptyFixationPanel = new EmptyFixationPanel();
 	}
 
 	private void createGetReadyTimer() {
@@ -235,7 +229,7 @@ public class Logic extends JPanel {
 	}
 
 	private void createFixationTimer() {
-		fixationTimer = new Timer(500, event -> {
+		fixationTimer = new Timer(750, event -> {
 			// if the key is pressed while it is listening, record into
 			// the boolean variable keyPressed - not here
 			fixationPanel.deleteDistractors();
@@ -254,7 +248,7 @@ public class Logic extends JPanel {
 
 	private void createTrialTimer() {	
 		// Triggers every 1000 + 200 + 500 ms
-		trialTimer = new Timer(1800, e ->  {
+		trialTimer = new Timer(2000, e ->  {
 			//Will start new block every 4 trials
 			if (++trialCounter % 4 == 0) {
 				trialTimer.stop();
@@ -279,7 +273,7 @@ public class Logic extends JPanel {
 	private void createBlockTimer() {	
 		// Triggers every 1000 + 200 + 500 ms
 		//50,000ms - length of block (50 sec)
-		blockTimer = new Timer(7000, e ->  {
+		blockTimer = new Timer(8000, e ->  {
 			updBlockID();
 			chooseInstructions();
 			displayPanel(instructionsPanel);
@@ -418,7 +412,7 @@ public class Logic extends JPanel {
 		//determine congruency 
 		eightyTwentyMusic();
 		recordData();
-		displayPanel(getReadyPanel);	
+		displayPanel(emptyFixationPanel);	
 		getReadyTimer.start();		
 	}
 
