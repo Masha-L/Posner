@@ -235,7 +235,6 @@ public class FixationPanel extends JPanel implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
 	}
 
 
@@ -286,31 +285,13 @@ public class FixationPanel extends JPanel implements KeyListener {
 		try {
 			writer.write(i + " " +  reactionTime + "\n");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 	}
 
-	/*
-	 * Record left, right, or null --> Just shell. Need to get writer/file into this class 
-	 * Not sure if we need this if we just want to record accurate or not
-	 */
-	//	private void recordKey(String result) {
-	//		try {
-	//			
-	////			writer.write("RT: " + result + "\n");
-	////			writer.flush();
-	//			
-	//		} catch (IOException e1) {
-	//			// TODO Auto-generated catch block
-	//			e1.printStackTrace();
-	//		}
-	//	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
