@@ -8,13 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Timer;
-import javax.swing.JTextArea;
 
 public class Logic extends JPanel {
 
@@ -31,41 +30,42 @@ public class Logic extends JPanel {
 
 	private int[] blockSequence = new int[3];
 
-	private String[] INSTRUCTIONS = {"<html>SILENT EASY: Focus your eyes on the cross in the middle of the screen. \n"
-			+ "A star will appear in either the left or right box.  Please press the left arrow\n"
-			+ " key if the star appears in the box to the left of the fixation cross and press\n"
-			+ " the right arrow key if the star appears in the box to the right of the fixation\n"
-			+ " cross. You will have half a second to respond once the star appears on the screen.\n"
-			+ " Please try to remain as still as possible and leave your headphones on. \n</html>", 
-			"<html>SILENT HARD: Focus your eyes on the cross in the middle of the screen. A star will appear in either\n"
-			+ " the left or right box, and you will see four objects, (heart, diamond, club, and spade)\n"
-			+ " appear at random positions around the screen. You should still press the arrow key\n"
-			+ " that corresponds to the box where the star appears. Please press the left arrow key\n"
-			+ " if the star appears in the box to the left of the fixation cross and press the\n"
-			+ " right arrow key if the star appears in the box to the right of the fixation cross.\n"
-			+ " You will have half a second to respond once the star appears on the screen.\n</html>",
-			"<html>EXO EASY: Focus your eyes on the cross in the middle of the screen. You will hear a beep in either\n"
-			+ " the left or right headphone. A star will appear in either the left or right box.\n"
-			+ " Please press the left arrow key if the star appears in the box to the left of the\n"
-			+ " fixation cross and press the right arrow key if the star appears in the box to the\n"
-			+ " right of the fixation cross. You will have half a second to respond once the star\n"
-			+ " appears on the screen.\n</html>",
-			"<html>EXO HARD: Focus your eyes on the cross in the middle of the screen. You will hear a beep in\n"
-			+ " either the left or right headphone. A star will appear in either the left or\n"
-			+ " right box, and you will see four objects, (heart, diamond, club, and spade) appear\n"
-			+ " at random positions around the screen. You should still press the arrow key that\n"
-			+ " corresponds to the box where the star appears. You will have half a second to respond\n"
-			+ " once the star appears on the screen.\n</html>",
-			"<html>ENDO EASY: Focus your eyes on the cross in the middle of the screen. This time, you will hear either\n"
-			+ " left or right in your headphones. A star will appear in either the left or right box.\n"
-			+ "  Please press the left arrow key if the star appears in the box to the left of the fixation\n"
-			+ " cross and press the right arrow key if the star appears in the box to the right of the\n"
-			+ " fixation cross. You will have half a second to respond once the star appears on the screen.\n</html>",
-			"<html>ENDO HARD: Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or\n"
-			+ " right in your headphones. A star will appear in either the left or right box, and you will\n"
-			+ " see four objects, (heart, diamond, club, and spade) appear at random positions around the screen.\n"
-			+ " You should still press the arrow key that corresponds to the box where the star appears.\n"
-			+ "You will have half a second to respond once the star appears on the screen.\n</html>"};
+	private String[] INSTRUCTIONS = {"SILENT EASY: Focus your eyes on the cross in the middle"
+			+ " of the screen. A star will appear in either the left or right box. "
+			+ " Please press the left arrow key if the star appears in the box to the "
+			+ " left of the fixation cross and press the right arrow key if the star "
+			+ "appears in the box to the right of the fixationcross. You will have half "
+			+ " a second to respond once the star appears on the screen.Please try to remain"
+			+ " as stillas possible and leave your headphones on.",
+			"SILENT HARD: Focus your eyes on the cross in the middle of the screen."
+			+ " A star will appear in either the left or right box, and you will see four objects,"
+			+ " (heart, diamond, club, and spade) appear at random positions around the screen. You "
+			+ "should still press the arrow key that corresponds to the box where the star appears. "
+			+ "Please press the left arrow key if the star appears in the box to the left of the fixation "
+			+ "cross and press the right arrow key if the star appears in the box to the right of the "
+			+ "fixation cross. You will have half a second to respond once the star appears on the screen.",
+			"EXO EASY: Focus your eyes on the cross in the middle of the screen. You will hear a beep in either"
+			+ " the left or right headphone. A star will appear in either the left or right box."
+			+ " Please press the left arrow key if the star appears in the box to the left of the"
+			+ " fixation cross and press the right arrow key if the star appears in the box to the"
+			+ " right of the fixation cross. You will have half a second to respond once the star"
+			+ " appears on the screen.",
+			"EXO HARD: Focus your eyes on the cross in the middle of the screen. You will hear a beep in"
+			+ " either the left or right headphone. A star will appear in either the left or"
+			+ " right box, and you will see four objects, (heart, diamond, club, and spade) appear"
+			+ " at random positions around the screen. You should still press the arrow key that"
+			+ " corresponds to the box where the star appears. You will have half a second to respond"
+			+ " once the star appears on the screen.",
+			"ENDO EASY: Focus your eyes on the cross in the middle of the screen. This time, you will hear either"
+			+ " left or right in your headphones. A star will appear in either the left or right box."
+			+ "  Please press the left arrow key if the star appears in the box to the left of the fixation"
+			+ " cross and press the right arrow key if the star appears in the box to the right of the"
+			+ " fixation cross. You will have half a second to respond once the star appears on the screen.",
+			"ENDO HARD: Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or"
+			+ " right in your headphones. A star will appear in either the left or right box, and you will"
+			+ " see four objects, (heart, diamond, club, and spade) appear at random positions around the screen."
+			+ " You should still press the arrow key that corresponds to the box where the star appears."
+			+ "You will have half a second to respond once the star appears on the screen."};
 	private JTextArea instructionsLabel;
 	private int trialCounter = 0;
 	private int currentBlock = 0;
@@ -95,7 +95,7 @@ public class Logic extends JPanel {
 		initializeMusic();
 		
 		
-		 //I think this needs to be done before
+	 //I think this needs to be done before
 		//the first panel so we can know which instructions to put and set them
 		
 		
@@ -114,7 +114,7 @@ public class Logic extends JPanel {
 				//Make file for the participant
 				int ptNumber = Integer.parseInt(promptField.getText());
 				createNewFile(ptNumber); 
-				setConditions();
+				chooseInstructions();
 				displayPanel(instructionsPanel);
 			}		
 		});
@@ -149,7 +149,6 @@ public class Logic extends JPanel {
 		instructionsLabel.setLineWrap(true);
 		instructionsLabel.setWrapStyleWord(true);
 		instructionsLabel.setFont(new Font(instructionsLabel.getFont().getFontName(), Font.BOLD, 25));
-//		instructionsLabel.setBounds(20, 20, 400, 400);
 		instructionsLabel.setSize(700, 400);
 		
 		JButton startButton = new JButton("Start");
@@ -157,33 +156,37 @@ public class Logic extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(currentBlock < 6) {
-					if(currentBlock==2) {
-						blockID++;
-					}
+//					updBlockID();
 
-					if(currentBlock == 4) {
-						blockID++;
-					}
+					setConditions();
 					startBlock();
 					blockTimer.start();
 				}
-				if(currentBlock!=0)
-					setInstructions();
+			}
 
-			}		
 		});
-		setInstructions();
+		
 		instructionsPanel.add(instructionsLabel);
 		instructionsLabel.setBounds(20, 20, 400, 400);
 		instructionsPanel.add(startButton);
 	}
+	
+	private void updBlockID() {
+		if(currentBlock==2) {
+			blockID++;
+		}
+
+		if(currentBlock == 4) {
+			blockID++;
+		}
+	}		
 
 	private void createFixationPanel() {
 		fixationPanel = new FixationPanel(fixationTimer);
 	}
 
-	private void setInstructions() {
-		instructionsLabel.setText(setConditions());
+	private void setInstructions(String currentInstruction) {
+		instructionsLabel.setText(currentInstruction);
 	}
 
 	private void createGetReadyPanel() {
@@ -277,6 +280,8 @@ public class Logic extends JPanel {
 		// Triggers every 1000 + 200 + 500 ms
 		//50,000ms - length of block (50 sec)
 		blockTimer = new Timer(7000, e ->  {
+			updBlockID();
+			chooseInstructions();
 			displayPanel(instructionsPanel);
 		});
 		blockTimer.setRepeats(false);
@@ -312,7 +317,6 @@ public class Logic extends JPanel {
 		 * 0 - silence
 		 * 1 - endogenous
 		 * 2 - exogenous
-
 		 */	
 		Random rand = new Random();
 		for (int i = 0; i < 3; i++) {
@@ -328,39 +332,43 @@ public class Logic extends JPanel {
 		}
 	}
 
-	protected String setConditions() {
+	protected void setConditions() {
 		//determine distractors 
 		determineDistractors();
 		//set proper instructions 
-		if(distractors == false) {
+//		setInstructions("hey ho");
+	}
+
+	private void chooseInstructions() {
+		if(currentBlock%2==0) {
 			//Easy Silent
 			if(blockSequence[blockID] == 0) {
-				return INSTRUCTIONS[0];
+				setInstructions(INSTRUCTIONS[0]);
 			}
 			//Easy Exo
 			else if(blockSequence[blockID] == 1) {
-				return INSTRUCTIONS[2];
+				setInstructions(INSTRUCTIONS[2]);
 			}
 			//Easy Endo
 			else {
-				return INSTRUCTIONS[4];
+				setInstructions(INSTRUCTIONS[4]);
 			}
 		}
-		
-		//Hard Silent
-		if(blockSequence[blockID] == 0) {
-			return INSTRUCTIONS[1];
-		}
-		//Hard Exo
-		else if(blockSequence[blockID] == 1) {
-			return INSTRUCTIONS[3];
-		}
-		//Hard Endo
 		else {
-			return INSTRUCTIONS[5];
+			//Hard Silent
+			if(blockSequence[blockID] == 0) {
+				setInstructions(INSTRUCTIONS[1]);
+			}
+			//Hard Exo
+			else if(blockSequence[blockID] == 1) {
+				setInstructions(INSTRUCTIONS[3]);
+			}
+			//Hard Endo
+			else {
+				setInstructions(INSTRUCTIONS[5]);
+			}
+			
 		}
-
-//		setInstructions("hey ho");
 	}
 
 	private void determineDirection() {
@@ -419,7 +427,6 @@ public class Logic extends JPanel {
 			writer.write(trialCounter + " " + currentBlock + " " + blockSequence[blockID] 
 					+ " " + congruent + " ");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
