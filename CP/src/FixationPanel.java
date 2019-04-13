@@ -280,10 +280,12 @@ public class FixationPanel extends JPanel implements KeyListener {
 
 	}
 
-	private void recordReactionTime(int i) {
+	private void recordReactionTime(int i) { 
+		//accuracy and reaction time
 		reactionTime = System.currentTimeMillis() - reactionTime;
 		try {
 			writer.write(i + " " +  reactionTime + "\n");
+			writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		

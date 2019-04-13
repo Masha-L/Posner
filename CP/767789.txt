@@ -1,0 +1,19 @@
+trialCounter currentBlock condition congruent accuracy reaction time
+0 1 0 true 1 245
+1 1 0 false 1 180
+2 1 0 false 1 380
+3 1 0 true 0 500
+4 2 0 true 1 250
+5 2 0 true 1 423
+6 2 0 true 1 31
+7 2 0 true 0 20
+8 3 2 true 1 355
+9 3 2 true 1 382
+10 3 2 true 1 196
+11 3 2 true 1 147
+12 4 2 true 1 71
+13 4 2 true 0 500
+14 4 2 true 1 294
+15 4 2 true 0 500
+16 5 1 true 0 213
+17 5 1 true 0 500
