@@ -30,38 +30,38 @@ public class Logic extends JPanel {
 
 	private int[] blockSequence = new int[3];
 
-	private String[] INSTRUCTIONS = {"SILENT EASY: Focus your eyes on the cross in the middle"
+	private String[] INSTRUCTIONS = {"Focus your eyes on the cross in the middle"
 			+ " of the screen. A star will appear in either the left or right box. "
 			+ " Please press the left arrow key if the star appears in the box to the "
 			+ " left of the fixation cross and press the right arrow key if the star "
 			+ "appears in the box to the right of the fixationcross. You will have half "
 			+ " a second to respond once the star appears on the screen.Please try to remain"
 			+ " as stillas possible and leave your headphones on.",
-			"SILENT HARD: Focus your eyes on the cross in the middle of the screen."
+			" Focus your eyes on the cross in the middle of the screen."
 			+ " A star will appear in either the left or right box, and you will see four objects,"
 			+ " (heart, diamond, club, and spade) appear at random positions around the screen. You "
 			+ "should still press the arrow key that corresponds to the box where the star appears. "
 			+ "Please press the left arrow key if the star appears in the box to the left of the fixation "
 			+ "cross and press the right arrow key if the star appears in the box to the right of the "
 			+ "fixation cross. You will have half a second to respond once the star appears on the screen.",
-			"EXO EASY: Focus your eyes on the cross in the middle of the screen. You will hear a beep in either"
+			" Focus your eyes on the cross in the middle of the screen. You will hear a beep in either"
 			+ " the left or right headphone. A star will appear in either the left or right box."
 			+ " Please press the left arrow key if the star appears in the box to the left of the"
 			+ " fixation cross and press the right arrow key if the star appears in the box to the"
 			+ " right of the fixation cross. You will have half a second to respond once the star"
 			+ " appears on the screen.",
-			"EXO HARD: Focus your eyes on the cross in the middle of the screen. You will hear a beep in"
+			" Focus your eyes on the cross in the middle of the screen. You will hear a beep in"
 			+ " either the left or right headphone. A star will appear in either the left or"
 			+ " right box, and you will see four objects, (heart, diamond, club, and spade) appear"
 			+ " at random positions around the screen. You should still press the arrow key that"
 			+ " corresponds to the box where the star appears. You will have half a second to respond"
 			+ " once the star appears on the screen.",
-			"ENDO EASY: Focus your eyes on the cross in the middle of the screen. This time, you will hear either"
+			" Focus your eyes on the cross in the middle of the screen. This time, you will hear either"
 			+ " left or right in your headphones. A star will appear in either the left or right box."
 			+ "  Please press the left arrow key if the star appears in the box to the left of the fixation"
 			+ " cross and press the right arrow key if the star appears in the box to the right of the"
 			+ " fixation cross. You will have half a second to respond once the star appears on the screen.",
-			"ENDO HARD: Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or"
+			" Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or"
 			+ " right in your headphones. A star will appear in either the left or right box, and you will"
 			+ " see four objects, (heart, diamond, club, and spade) appear at random positions around the screen."
 			+ " You should still press the arrow key that corresponds to the box where the star appears."
@@ -249,7 +249,7 @@ public class Logic extends JPanel {
 		// Triggers every 1000 + 200 + 500 ms
 		trialTimer = new Timer(2000, e ->  {
 			//Will start new block every 4 trials
-			if (++trialCounter % 4 == 0) {
+			if (++trialCounter % 60 == 0) {
 				trialTimer.stop();
 			}
 			else {
@@ -261,7 +261,7 @@ public class Logic extends JPanel {
 	private void recordTimeOut() {
 		try {
 
-			writer.write(0 + " " + 500 + "\n");
+			writer.write(0 + " " + 750 + "\n");
 			writer.flush();
 
 		} catch (IOException e1) {
@@ -272,7 +272,7 @@ public class Logic extends JPanel {
 	private void createBlockTimer() {	
 		// Triggers every 1000 + 200 + 500 ms
 		//50,000ms - length of block (50 sec)
-		blockTimer = new Timer(8000, e ->  {
+		blockTimer = new Timer(120000, e ->  {
 			updBlockID();
 			chooseInstructions();
 			displayPanel(instructionsPanel);
