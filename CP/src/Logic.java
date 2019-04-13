@@ -70,7 +70,6 @@ public class Logic extends JPanel {
 	private int trialCounter = 0;
 	private int currentBlock = 0;
 	private int blockID = 0;
-	private long start, stop;
 
 	private boolean distractors = true;
 	// 0 - control, 1 - exo, 2 - endo
@@ -399,7 +398,7 @@ public class Logic extends JPanel {
 	}
 
 	private void startBlock() {
-		start = System.nanoTime();	
+		//start = System.nanoTime();	
 		trialTimer.start();
 		startTrial();
 	}
