@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.JTextArea;
 
 public class Logic extends JPanel {
 
@@ -65,7 +66,7 @@ public class Logic extends JPanel {
 			+ " see four objects, (heart, diamond, club, and spade) appear at random positions around the screen.\n"
 			+ " You should still press the arrow key that corresponds to the box where the star appears.\n"
 			+ "You will have half a second to respond once the star appears on the screen.\n</html>"};
-	private JLabel instructionsLabel;
+	private JTextArea instructionsLabel;
 	private int trialCounter = 0;
 	private int currentBlock = 0;
 	private int blockID = 0;
@@ -82,6 +83,7 @@ public class Logic extends JPanel {
 	public Logic() {
 		setLayout(new BorderLayout());	
 		createPromptPanel();
+		initializeSequence();
 		createInstructionsPanel();
 		createFixationTimer();
 		createFixationPanel();
@@ -93,7 +95,7 @@ public class Logic extends JPanel {
 		initializeMusic();
 		
 		
-		initializeSequence(); //I think this needs to be done before
+		 //I think this needs to be done before
 		//the first panel so we can know which instructions to put and set them
 		
 		
@@ -112,6 +114,7 @@ public class Logic extends JPanel {
 				//Make file for the participant
 				int ptNumber = Integer.parseInt(promptField.getText());
 				createNewFile(ptNumber); 
+				setConditions();
 				displayPanel(instructionsPanel);
 			}		
 		});
@@ -142,12 +145,12 @@ public class Logic extends JPanel {
 
 	private void createInstructionsPanel() {
 		instructionsPanel = new JPanel(new FlowLayout());
-		instructionsLabel = new JLabel();
-		instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
-		instructionsLabel.setVerticalAlignment(JLabel.CENTER);
+		instructionsLabel = new JTextArea();
+		instructionsLabel.setLineWrap(true);
+		instructionsLabel.setWrapStyleWord(true);
 		instructionsLabel.setFont(new Font(instructionsLabel.getFont().getFontName(), Font.BOLD, 25));
 //		instructionsLabel.setBounds(20, 20, 400, 400);
-		instructionsLabel.setSize(400, 400);
+		instructionsLabel.setSize(700, 400);
 		
 		JButton startButton = new JButton("Start");
 		startButton.addActionListener(new ActionListener() {
@@ -161,14 +164,15 @@ public class Logic extends JPanel {
 					if(currentBlock == 4) {
 						blockID++;
 					}
-
-					setConditions();
 					startBlock();
 					blockTimer.start();
 				}
+				if(currentBlock!=0)
+					setInstructions();
 
 			}		
 		});
+		setInstructions();
 		instructionsPanel.add(instructionsLabel);
 		instructionsLabel.setBounds(20, 20, 400, 400);
 		instructionsPanel.add(startButton);
@@ -178,8 +182,8 @@ public class Logic extends JPanel {
 		fixationPanel = new FixationPanel(fixationTimer);
 	}
 
-	private void setInstructions(String currentInstruction) {
-		instructionsLabel.setText(currentInstruction);
+	private void setInstructions() {
+		instructionsLabel.setText(setConditions());
 	}
 
 	private void createGetReadyPanel() {
@@ -324,38 +328,36 @@ public class Logic extends JPanel {
 		}
 	}
 
-	protected void setConditions() {
+	protected String setConditions() {
 		//determine distractors 
 		determineDistractors();
 		//set proper instructions 
-		if(distractors == true) {
+		if(distractors == false) {
 			//Easy Silent
 			if(blockSequence[blockID] == 0) {
-				setInstructions(INSTRUCTIONS[0]);
-			}
-			//Easy Endo
-			else if(blockSequence[blockID] == 1) {
-				setInstructions(INSTRUCTIONS[4]);
+				return INSTRUCTIONS[0];
 			}
 			//Easy Exo
+			else if(blockSequence[blockID] == 1) {
+				return INSTRUCTIONS[2];
+			}
+			//Easy Endo
 			else {
-				setInstructions(INSTRUCTIONS[2]);
+				return INSTRUCTIONS[4];
 			}
 		}
+		
+		//Hard Silent
+		if(blockSequence[blockID] == 0) {
+			return INSTRUCTIONS[1];
+		}
+		//Hard Exo
+		else if(blockSequence[blockID] == 1) {
+			return INSTRUCTIONS[3];
+		}
+		//Hard Endo
 		else {
-			//Hard Silent
-			if(blockSequence[blockID] == 0) {
-				setInstructions(INSTRUCTIONS[1]);
-			}
-			//Hard Endo
-			else if(blockSequence[blockID] == 1) {
-				setInstructions(INSTRUCTIONS[5]);
-			}
-			//Hard Exo
-			else {
-				setInstructions(INSTRUCTIONS[3]);
-			}
-			
+			return INSTRUCTIONS[5];
 		}
 
 //		setInstructions("hey ho");
