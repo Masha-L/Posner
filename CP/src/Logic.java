@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
+import javax.swing.JTextArea;
 
 public class Logic extends JPanel {
 
@@ -30,8 +31,42 @@ public class Logic extends JPanel {
 
 	private int[] blockSequence = new int[3];
 
-	private String[] INSTRUCTIONS = {"", "", "", "", "", ""};
-	private JLabel instructionsLabel;
+	private String[] INSTRUCTIONS = {"<html>SILENT EASY: Focus your eyes on the cross in the middle of the screen. \n"
+			+ "A star will appear in either the left or right box.  Please press the left arrow\n"
+			+ " key if the star appears in the box to the left of the fixation cross and press\n"
+			+ " the right arrow key if the star appears in the box to the right of the fixation\n"
+			+ " cross. You will have half a second to respond once the star appears on the screen.\n"
+			+ " Please try to remain as still as possible and leave your headphones on. \n</html>", 
+			"<html>SILENT HARD: Focus your eyes on the cross in the middle of the screen. A star will appear in either\n"
+			+ " the left or right box, and you will see four objects, (heart, diamond, club, and spade)\n"
+			+ " appear at random positions around the screen. You should still press the arrow key\n"
+			+ " that corresponds to the box where the star appears. Please press the left arrow key\n"
+			+ " if the star appears in the box to the left of the fixation cross and press the\n"
+			+ " right arrow key if the star appears in the box to the right of the fixation cross.\n"
+			+ " You will have half a second to respond once the star appears on the screen.\n</html>",
+			"<html>EXO EASY: Focus your eyes on the cross in the middle of the screen. You will hear a beep in either\n"
+			+ " the left or right headphone. A star will appear in either the left or right box.\n"
+			+ " Please press the left arrow key if the star appears in the box to the left of the\n"
+			+ " fixation cross and press the right arrow key if the star appears in the box to the\n"
+			+ " right of the fixation cross. You will have half a second to respond once the star\n"
+			+ " appears on the screen.\n</html>",
+			"<html>EXO HARD: Focus your eyes on the cross in the middle of the screen. You will hear a beep in\n"
+			+ " either the left or right headphone. A star will appear in either the left or\n"
+			+ " right box, and you will see four objects, (heart, diamond, club, and spade) appear\n"
+			+ " at random positions around the screen. You should still press the arrow key that\n"
+			+ " corresponds to the box where the star appears. You will have half a second to respond\n"
+			+ " once the star appears on the screen.\n</html>",
+			"<html>ENDO EASY: Focus your eyes on the cross in the middle of the screen. This time, you will hear either\n"
+			+ " left or right in your headphones. A star will appear in either the left or right box.\n"
+			+ "  Please press the left arrow key if the star appears in the box to the left of the fixation\n"
+			+ " cross and press the right arrow key if the star appears in the box to the right of the\n"
+			+ " fixation cross. You will have half a second to respond once the star appears on the screen.\n</html>",
+			"<html>ENDO HARD: Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or\n"
+			+ " right in your headphones. A star will appear in either the left or right box, and you will\n"
+			+ " see four objects, (heart, diamond, club, and spade) appear at random positions around the screen.\n"
+			+ " You should still press the arrow key that corresponds to the box where the star appears.\n"
+			+ "You will have half a second to respond once the star appears on the screen.\n</html>"};
+	private JTextArea instructionsLabel;
 	private int trialCounter = 0;
 	private int currentBlock = 0;
 	private int blockID = 0;
@@ -48,6 +83,7 @@ public class Logic extends JPanel {
 	public Logic() {
 		setLayout(new BorderLayout());	
 		createPromptPanel();
+		initializeSequence();
 		createInstructionsPanel();
 		createFixationTimer();
 		createFixationPanel();
@@ -57,7 +93,12 @@ public class Logic extends JPanel {
 		createBlockTimer();
 		createMusicTimer();
 		initializeMusic();
-		initializeSequence();
+		
+		
+		 //I think this needs to be done before
+		//the first panel so we can know which instructions to put and set them
+		
+		
 		current = bLeft;
 		add(promptPanel);
 	}
@@ -73,6 +114,7 @@ public class Logic extends JPanel {
 				//Make file for the participant
 				int ptNumber = Integer.parseInt(promptField.getText());
 				createNewFile(ptNumber); 
+				setConditions();
 				displayPanel(instructionsPanel);
 			}		
 		});
@@ -103,9 +145,13 @@ public class Logic extends JPanel {
 
 	private void createInstructionsPanel() {
 		instructionsPanel = new JPanel(new FlowLayout());
-		instructionsLabel = new JLabel();
-		instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
-		instructionsLabel.setVerticalAlignment(JLabel.CENTER);
+		instructionsLabel = new JTextArea();
+		instructionsLabel.setLineWrap(true);
+		instructionsLabel.setWrapStyleWord(true);
+		instructionsLabel.setFont(new Font(instructionsLabel.getFont().getFontName(), Font.BOLD, 25));
+//		instructionsLabel.setBounds(20, 20, 400, 400);
+		instructionsLabel.setSize(700, 400);
+		
 		JButton startButton = new JButton("Start");
 		startButton.addActionListener(new ActionListener() {
 			@Override
@@ -118,15 +164,17 @@ public class Logic extends JPanel {
 					if(currentBlock == 4) {
 						blockID++;
 					}
-
-					setConditions();
 					startBlock();
 					blockTimer.start();
 				}
+				if(currentBlock!=0)
+					setInstructions();
 
 			}		
 		});
+		setInstructions();
 		instructionsPanel.add(instructionsLabel);
+		instructionsLabel.setBounds(20, 20, 400, 400);
 		instructionsPanel.add(startButton);
 	}
 
@@ -134,8 +182,8 @@ public class Logic extends JPanel {
 		fixationPanel = new FixationPanel(fixationTimer);
 	}
 
-	private void setInstructions(String currentInstruction) {
-		instructionsLabel.setText(currentInstruction);
+	private void setInstructions() {
+		instructionsLabel.setText(setConditions());
 	}
 
 	private void createGetReadyPanel() {
@@ -280,11 +328,39 @@ public class Logic extends JPanel {
 		}
 	}
 
-	protected void setConditions() {
+	protected String setConditions() {
 		//determine distractors 
 		determineDistractors();
 		//set proper instructions 
-		setInstructions("hey ho");
+		if(distractors == false) {
+			//Easy Silent
+			if(blockSequence[blockID] == 0) {
+				return INSTRUCTIONS[0];
+			}
+			//Easy Exo
+			else if(blockSequence[blockID] == 1) {
+				return INSTRUCTIONS[2];
+			}
+			//Easy Endo
+			else {
+				return INSTRUCTIONS[4];
+			}
+		}
+		
+		//Hard Silent
+		if(blockSequence[blockID] == 0) {
+			return INSTRUCTIONS[1];
+		}
+		//Hard Exo
+		else if(blockSequence[blockID] == 1) {
+			return INSTRUCTIONS[3];
+		}
+		//Hard Endo
+		else {
+			return INSTRUCTIONS[5];
+		}
+
+//		setInstructions("hey ho");
 	}
 
 	private void determineDirection() {
