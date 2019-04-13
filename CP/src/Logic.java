@@ -34,38 +34,38 @@ public class Logic extends JPanel {
 			+ " of the screen. A star will appear in either the left or right box. "
 			+ " Please press the left arrow key if the star appears in the box to the "
 			+ " left of the fixation cross and press the right arrow key if the star "
-			+ "appears in the box to the right of the fixationcross. You will have half "
-			+ " a second to respond once the star appears on the screen.Please try to remain"
+			+ "appears in the box to the right of the fixationcross. You will have 0.75 "
+			+ " seconds to respond once the star appears on the screen.Please try to remain"
 			+ " as stillas possible and leave your headphones on.",
-			" Focus your eyes on the cross in the middle of the screen."
+			"Focus your eyes on the cross in the middle of the screen."
 			+ " A star will appear in either the left or right box, and you will see four objects,"
 			+ " (heart, diamond, club, and spade) appear at random positions around the screen. You "
 			+ "should still press the arrow key that corresponds to the box where the star appears. "
 			+ "Please press the left arrow key if the star appears in the box to the left of the fixation "
 			+ "cross and press the right arrow key if the star appears in the box to the right of the "
-			+ "fixation cross. You will have half a second to respond once the star appears on the screen.",
-			" Focus your eyes on the cross in the middle of the screen. You will hear a beep in either"
+			+ "fixation cross. You will have 0.75 seconds to respond once the star appears on the screen.",
+			"Focus your eyes on the cross in the middle of the screen. You will hear a beep in either"
 			+ " the left or right headphone. A star will appear in either the left or right box."
 			+ " Please press the left arrow key if the star appears in the box to the left of the"
 			+ " fixation cross and press the right arrow key if the star appears in the box to the"
-			+ " right of the fixation cross. You will have half a second to respond once the star"
+			+ " right of the fixation cross. You will have 0.75 seconds to respond once the star"
 			+ " appears on the screen.",
-			" Focus your eyes on the cross in the middle of the screen. You will hear a beep in"
+			"Focus your eyes on the cross in the middle of the screen. You will hear a beep in"
 			+ " either the left or right headphone. A star will appear in either the left or"
 			+ " right box, and you will see four objects, (heart, diamond, club, and spade) appear"
 			+ " at random positions around the screen. You should still press the arrow key that"
-			+ " corresponds to the box where the star appears. You will have half a second to respond"
+			+ " corresponds to the box where the star appears. You will have 0.75 seconds to respond"
 			+ " once the star appears on the screen.",
-			" Focus your eyes on the cross in the middle of the screen. This time, you will hear either"
+			"Focus your eyes on the cross in the middle of the screen. This time, you will hear either"
 			+ " left or right in your headphones. A star will appear in either the left or right box."
 			+ "  Please press the left arrow key if the star appears in the box to the left of the fixation"
 			+ " cross and press the right arrow key if the star appears in the box to the right of the"
-			+ " fixation cross. You will have half a second to respond once the star appears on the screen.",
-			" Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or"
+			+ " fixation cross. You will have 0.75 seconds to respond once the star appears on the screen.",
+			"Focus your eyes on the cross in the middle of the screen. This time, you will hear either left or"
 			+ " right in your headphones. A star will appear in either the left or right box, and you will"
 			+ " see four objects, (heart, diamond, club, and spade) appear at random positions around the screen."
 			+ " You should still press the arrow key that corresponds to the box where the star appears."
-			+ "You will have half a second to respond once the star appears on the screen."};
+			+ "You will have 0.75 seconds to respond once the star appears on the screen."};
 	private JTextArea instructionsLabel;
 	private int trialCounter = 0;
 	private int currentBlock = 0;
